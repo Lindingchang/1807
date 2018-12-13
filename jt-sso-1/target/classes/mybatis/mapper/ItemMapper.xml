@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jt.manage.mapper.ItemMapper">
+  
+  <!--编辑sql时不能加分号  -->
+  <!-- #与$区别 
+   #号：
+        1.使用#传参数具有预编译的效果，防止sql注入攻击。
+        2.为参数添加了一对""号 能使用#不适用$
+   $符号
+                 只有一字段名字为参数时才会使用$
+    -->
+  <select id="findItemByPage" resultType="Item">
+   select * from tb_item  order by updated desc limit #{start},#{rows}
+  </select>
+  
+  <!--实现批量更新  -->
+ <update id="updateStatus" >
+		update tb_item set status=#{status},updated=now()
+		where id in (
+		<foreach collection="ids" item="id" separator=",">
+			#{id}
+		</foreach>
+		)
+	</update>
+</mapper>

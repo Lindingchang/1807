@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"  
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">  
+    <!--   <bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool">
+   <constructor-arg name="poolConfig" ref="poolConfig"/> 
+    <constructor-arg name="shards">
+      <list>
+        <ref bean="jedisShardInfo1"/>
+        <ref bean="jedisShardInfo2"/>
+        <ref bean="jedisShardInfo3"/>
+      </list>      
+    </constructor-arg>
+  </bean>
+  
+  <bean id="poolConfig" class="org.springframework.data.redis.connection.PoolConfig">
+     <property name="maxTotal" value="500"></property>
+     <property name="minIdle" value="20"></property>
+  </bean>
+  
+  <bean id="jedisShardInfo1" class="redis.clients.jedis.JedisShardInfo">
+       <constructor-arg name="host" value="${redis.host}"/>
+       <constructor-arg name="port" value="${redis.port1}"/>   
+  </bean>
+  
+  <bean id="jedisShardInfo2" class="redis.clients.jedis.JedisShardInfo">
+       <constructor-arg name="host" value="${redis.host}"/>
+       <constructor-arg name="port" value="${redis.port2}"/>   
+  </bean>
+  
+  <bean id="jedisShardInfo3" class="redis.clients.jedis.JedisShardInfo">
+      <constructor-arg name="host" value="${redis.host}"/>
+      <constructor-arg name="port" value="${redis.port3}"/>   
+  </bean> -->
+  <!--整合redis哨兵模式  -->
+  <!-- <bean id="JedisSentinelPool" class="redis.clients.jedis.JedisSentinelPool">
+    <constructor-arg name="masterName" value="${masterName}"/>
+    <constructor-arg name="sentinels">
+     <set>
+       <value>${sentinel}</value>
+     </set>
+    </constructor-arg>
+  </bean>
+   -->
+    <!-- jedis 配置-->  
+    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig" >  
+        <!--最大空闲数-->  
+        <property name="maxIdle" value="${redis.maxIdle}" />  
+        <!--最大建立连接等待时间-->  
+        <property name="maxWaitMillis" value="${redis.maxWait}" />  
+        <!--是否在从池中取出连接前进行检验,如果检验失败,则从池中去除连接并尝试取出另一个-->  
+        <property name="testOnBorrow" value="${redis.testOnBorrow}" />  
+        <property name="maxTotal" value="${redis.maxTotal}" />  
+        <property name="minIdle" value="${redis.minIdle}" />  
+    </bean>
+    
+     <!--通过工厂模式获取数据  -->
+    <bean id="jedisCluster" class="com.jt.common.factory.JedisClusterFactory">
+    	
+    	<!--引入配置文件源文件  -->
+    	<property name="propertySource">
+    		<value>classpath:/properties/redis.properties</value>
+    	</property>
+    	<!--引入池配置文件  -->
+    	<property name="poolConfig" ref="poolConfig"/>
+    	<!--添加配置前缀-->
+    	<property name="redisNodePrefix" value="redis.cluster"/>
+    </bean>
+</beans>
